@@ -49,7 +49,6 @@ The application starts in `src/main.js`, where it creates the **VueX** store and
 - filtering/sorting the lists
 - a selenium test
 - cache `fetch` requests, to save github pings/offline mode
-- test for the App container (again, sorry no time for this)
 - accessibilty walkthrough (for example not use an `<li>` as a click target)
 - a unit test setup that does not run in a browser (I'm new to Vue so I'm not sure this is possible, but would be nice)
 
