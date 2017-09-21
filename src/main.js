@@ -7,7 +7,7 @@ import { createStore } from './store'
 Vue.use(VueX)
 
 const store = createStore({
-  user: 'karlwestin'
+  user: 'heremaps'
 })
 
 // Load the initial repo list

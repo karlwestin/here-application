@@ -43,10 +43,11 @@ The application starts in `src/main.js`, where it creates the **VueX** store and
 
 ## What's the TODO's / next steps?
 
+- more/better styles - its very bare bones right now, sorry had no time for this
+- display more repository information in the detail view
 - use some sort of routing library instead of my own home-built one (had no time for this)
 - filtering/sorting the lists
 - a selenium test
-- display more repository information in the detail view
 - cache `fetch` requests, to save github pings/offline mode
 - test for the App container (again, sorry no time for this)
 - accessibilty walkthrough (for example not use an `<li>` as a click target)

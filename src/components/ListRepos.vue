@@ -8,8 +8,8 @@ and switches to the detail view when a components name is clicked
     <h1>Repositories for user: {{ user }}</h1>
 
     <LoadingWrapper>
-        <li v-for="repo in data" @click="detail(repo.full_name)">
-        {{repo.name}} * {{ repo.stargazers_count }}
+        <li class='list-item item-blue item-flex' v-for="repo in data" @click="detail(repo.full_name)">
+          <div class='left'>{{repo.name}}</div> <div class="item-star-count">&#x2605; {{ repo.stargazers_count }}</div>
         </li>
     </LoadingWrapper>
   </div>
@@ -23,3 +23,27 @@ export default {
   methods: mapActions(['detail'])
 }
 </script>
+
+<style>
+.left {
+  text-align: left;
+}
+.item-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-blue {
+  cursor: pointer;
+  background-color: #38155b;
+  color: #fff;
+  font-weight: bold;
+}
+
+.item-star-count {
+  background-color: #eee;
+  color: #38155b;
+  padding: 2px 10px;
+  border-radius: 15px;
+}
+</style>

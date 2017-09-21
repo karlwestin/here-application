@@ -10,16 +10,16 @@ components are rendering
       <slot></slot>
     </ul>
     <ul data-qa="state-no-data" v-else-if="!loading && !error && !data.length">
-      <li>No data to display</li>
+      <li class='list-item item-grey'>No data to display</li>
     </ul>
     <ul data-qa="state-error" v-else-if="error">
-      <li>
+      <li class='list item item-error'>
         <h2>Something went wrong :(</h2>
         <p>{{error}}</p>
       </li>
     </ul>
     <ul data-qa="state-loading" v-else>
-      <li>Loading data...</li>
+      <li class='list-item item-transparent'>Loading data...</li>
     </ul>
   </div>
 </template>
@@ -31,3 +31,15 @@ export default {
   computed: mapState(['loading', 'error', 'data'])
 }
 </script>
+
+<style>
+  .item-grey {
+    background-color: #555;
+    color: #fff;
+  }
+
+  .item-error {
+    color: #fff;
+    background-color: #700606;
+  }
+</style>

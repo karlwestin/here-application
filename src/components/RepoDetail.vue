@@ -7,8 +7,8 @@ a list of languages involved and a link back to the repo listing view
     <h1>Stats for repository: {{ repo }}</h1>
 
     <LoadingWrapper>
-        <li v-for="(lines, language) in data">
-        {{language}} * {{ lines }}
+        <li class='list-item' v-for="(lines, language) in data">
+        {{language}}: {{ lines }} lines
         </li>
     </LoadingWrapper>
 
