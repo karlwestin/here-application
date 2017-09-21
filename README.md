@@ -16,6 +16,9 @@ npm run dev
 
 # build for production with minification
 npm run build
+# the built application will end up in the dist/ folder
+# and can be ran with for example
+cd dist/ && python -m SimpleHTTPServer
 
 # build for production and view the bundle analyzer report
 npm run build --report
@@ -46,6 +49,7 @@ The application starts in `src/main.js`, where it creates the **VueX** store and
 - more/better styles - its very bare bones right now, sorry had no time for this
 - display more repository information in the detail view
 - use some sort of routing library instead of my own home-built one (had no time for this)
+- check browser compatibility (I've only tested firefox and chrome tbh)
 - filtering/sorting the lists
 - a selenium test
 - cache `fetch` requests, to save github pings/offline mode
