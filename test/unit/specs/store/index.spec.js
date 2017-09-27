@@ -1,4 +1,5 @@
 import { createStore } from '@/store'
+import { clear } from '@/utils/fetch'
 
 /*
  * A note about testing strategies, mocking how to approach testing
@@ -42,6 +43,7 @@ describe('VueX store actions', () => {
 
   beforeEach(() => {
     oldFetch = window.fetch
+    clear() // remove anything cached from the fetch utils
     fetchArgs = []
     resolveRequest = null
     rejectRequest = null
