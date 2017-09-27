@@ -12,7 +12,7 @@ and switches to the detail view when a components name is clicked
       <SearchBox
         v-bind:name="'usersearch'"
         v-bind:text="user"
-        v-bind:handler="parentHandler" />
+        v-bind:handler="changeUser" />
     </div>
     <LoadingWrapper>
         <li class='list-item item-blue item-flex' v-for="repo in data" @click="detail(repo.full_name)">
@@ -29,7 +29,7 @@ export default {
   computed: mapState(['user', 'data']),
   methods: {
     ...mapActions(['detail']),
-    parentHandler (val) {
+    changeUser (val) {
       this.$store.state.user = val
       this.$store.dispatch('main')
     }

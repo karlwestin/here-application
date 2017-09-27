@@ -13,10 +13,12 @@ Object.keys(components).forEach((name) => {
 
 describe('ListRepos.vue', () => {
   let store
-  let calls
+  let detailcalls
+  let maincalls
 
   beforeEach(() => {
-    calls = []
+    detailcalls = []
+    maincalls = []
     store = new VueX.Store({
       state: {
         user: 'test',
@@ -31,7 +33,10 @@ describe('ListRepos.vue', () => {
       },
       actions: {
         detail: function () {
-          calls.push(arguments)
+          detailcalls.push(arguments)
+        },
+        main: function () {
+          maincalls.push(arguments)
         }
       }
     })
@@ -53,9 +58,17 @@ describe('ListRepos.vue', () => {
     expect(lis.length).to.equal(2)
 
     lis[0].trigger('click')
-    expect(calls.length).to.equal(1)
+    expect(detailcalls.length).to.equal(1)
     // repo name should be passed as the 2nd argument
     // to the detail action
-    expect(calls[0][1]).to.equal('test/repo1')
+    expect(detailcalls[0][1]).to.equal('test/repo1')
+  })
+
+  it('should trigger "main" when the changeUser method is called', () => {
+    const wrapper = mount(ListRepos, { store })
+    wrapper.vm.changeUser('new-user')
+
+    expect(store.state.user).to.equal('new-user')
+    expect(maincalls.length).to.equal(1)
   })
 })
