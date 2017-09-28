@@ -1,6 +1,6 @@
 import VueX from 'vuex'
 import fetchJSON from '../utils/fetch'
-import { userUrl, repoUrl } from '../utils/urls'
+import { userUrl } from '../utils/urls'
 
 export const types = {
   API_LOAD: 'API_LOAD',
@@ -14,7 +14,6 @@ export const createStore = (initialState = {}) => {
     state: Object.assign({
       user: 'heremaps',
       view: 'ListRepos',
-      repo: '',
       loading: false,
       error: '',
       data: []
@@ -22,7 +21,6 @@ export const createStore = (initialState = {}) => {
     mutations: {
       [types.VIEW_SET] (state, payload) {
         state.view = payload.view
-        state.repo = payload.repo
       },
       [types.API_LOAD] (state, payload) {
         state.loading = true
@@ -47,21 +45,31 @@ export const createStore = (initialState = {}) => {
         commit(types.API_LOAD)
 
         return fetchJSON(url)
-          .then((data) => commit(types.API_SUCCESS, { data }))
-          .catch((error) => commit(types.API_ERROR, { error }))
       },
       main ({ commit, dispatch, state }) {
         const url = userUrl(state.user)
         commit(types.VIEW_SET, { view: 'ListRepos', repo: '' })
         return dispatch('load', url)
+          .then((data) => commit(types.API_SUCCESS, { data }))
+          .catch((error) => commit(types.API_ERROR, { error }))
       },
       detail ({ commit, dispatch }, repo) {
-        const url = repoUrl(repo)
         commit(types.VIEW_SET, {
           view: 'RepoDetail',
           repo
         })
-        return dispatch('load', url)
+        return Promise.all([
+          dispatch('load', repo.languages_url),
+          dispatch('load', repo.contributors_url)
+        ])
+          .then(([languages, contributors]) => commit(types.API_SUCCESS, {
+            data: {
+              ...repo,
+              languages,
+              contributors
+            }
+          }))
+          .catch((error) => commit(types.API_ERROR, { error }))
       }
     }
   })

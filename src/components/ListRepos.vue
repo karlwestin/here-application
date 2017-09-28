@@ -15,7 +15,7 @@ and switches to the detail view when a components name is clicked
         v-bind:handler="changeUser" />
     </div>
     <LoadingWrapper>
-        <li class='list-item item-blue item-flex' v-for="repo in data" @click="detail(repo.full_name)">
+        <li class='list-item item-blue item-flex' v-for="repo in data" @click="detail(repo)">
           <div class='left'>{{repo.name}}</div> <div class="item-star-count">&#x2605; {{ repo.stargazers_count }}</div>
         </li>
     </LoadingWrapper>

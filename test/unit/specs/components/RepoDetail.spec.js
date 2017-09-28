@@ -20,12 +20,15 @@ describe('RepoDetail.vue', () => {
     store = new VueX.Store({
       state: {
         user: 'test',
-        repo: 'repo1',
         loading: false,
         data: {
-          'Java': 244,
-          'SQL': 123512,
-          'Clojure': 4
+          'full_name': 'test/repo1',
+          'name': 'repo1',
+          'languages': {
+            'Java': 244,
+            'SQL': 123512,
+            'Clojure': 4
+          }
         }
       },
       actions: {

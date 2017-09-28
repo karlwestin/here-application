@@ -45,8 +45,17 @@ describe('VueX store actions', () => {
     oldFetch = window.fetch
     clear() // remove anything cached from the fetch utils
     fetchArgs = []
+    let resolvers = []
     resolveRequest = null
     rejectRequest = null
+    resolveRequest = (ok, data) => {
+      resolvers.map((resolve) => {
+        resolve({
+          ok,
+          json: () => Promise.resolve(data)
+        })
+      })
+    }
 
     /*
      * this sets up a window.fetch mock that the test can control
@@ -58,12 +67,7 @@ describe('VueX store actions', () => {
       fetchArgs.push([url, settings])
 
       return new Promise((resolve, reject) => {
-        resolveRequest = (ok, data) => {
-          resolve({
-            ok,
-            json: () => Promise.resolve(data)
-          })
-        }
+        resolvers.push(resolve)
 
         rejectRequest = (errorMessage) => {
           reject(new Error(errorMessage))
@@ -98,107 +102,106 @@ describe('VueX store actions', () => {
       expect(fetchArgs[0][0]).to.equal('https://api.github.com/users/testuser/repos')
     })
 
-    it('loads data for the main view', (done) => {
+    it('loads data for the main view', () => {
       const store = createStore({ user: 'testuser' })
       const request = store.dispatch('main')
 
       resolveRequest(true, [{ name: 'myRepo', full_name: 'testuser/myRepo2' }, { name: 'OtherRepo', full_name: 'testuser/OtherRepo' }])
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
         expect(store.state.data[0].name).to.equal('myRepo')
-
-        done()
       })
     })
 
-    it('emits error if the user is not found', (done) => {
+    it('emits error if the user is not found', () => {
       const store = createStore({ user: 'testuser' })
       const request = store.dispatch('main')
 
       resolveRequest(false, { message: 'User not found' })
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
         expect(store.state.error).to.equal('User not found')
-        done()
       })
     })
 
-    it('emits error if there is a network error', (done) => {
+    it('emits error if there is a network error', () => {
       const store = createStore({ user: 'testuser' })
       const request = store.dispatch('main')
 
       rejectRequest('You are offline :(')
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
         expect(store.state.error).to.equal('You are offline :(')
-        done()
       })
     })
   })
 
   describe('"detail" action', () => {
+    const repodata = {
+      'full_name': 'testuser/repo1',
+      'name': 'repo1',
+      'languages_url': 'https://api.github.com/repos/testuser/repo1/languages',
+      'contributors_url': 'https://api.github.com/repos/testuser/repo1/contributors'
+    }
+
     it('sets the view to RepoDetail', () => {
       const store = createStore()
-      store.dispatch('detail', 'testuser/repo1')
+      store.dispatch('detail', repodata)
 
       expect(store.state.view).to.equal('RepoDetail')
-      expect(store.state.repo).to.equal('testuser/repo1')
     })
 
     it('sets the state to "loading"', () => {
       const store = createStore({ user: 'testuser' })
-      store.dispatch('detail', 'testuser/repo1')
+      store.dispatch('detail', repodata)
 
       expect(store.state.loading).to.equal(true)
     })
 
-    it('calls the right url', () => {
+    it('calls the right urls', () => {
       const store = createStore({ user: 'testuser' })
-      store.dispatch('detail', 'testuser/repo1')
+      store.dispatch('detail', repodata)
 
-      expect(fetchArgs[0][0]).to.equal('https://api.github.com/repos/testuser/repo1/languages')
+      expect(fetchArgs[0][0]).to.equal(repodata.languages_url)
+      expect(fetchArgs[1][0]).to.equal(repodata.contributors_url)
     })
 
-    it('loads data for the detail view', (done) => {
+    it('loads data for the detail view', () => {
       const store = createStore({ user: 'testuser' })
-      const request = store.dispatch('detail', 'testuser/repo1')
+      const request = store.dispatch('detail', repodata)
 
       resolveRequest(true, { 'C++': 110, 'C#': 11 })
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
-        expect(store.state.data['C++']).to.equal(110)
-
-        done()
+        expect(store.state.data.languages['C++']).to.equal(110)
       })
     })
 
-    it('emits error if the repo is not found', (done) => {
+    it('emits error if the repo is not found', () => {
       const store = createStore({ user: 'testuser' })
-      const request = store.dispatch('detail', 'testuser/repo1')
+      const request = store.dispatch('detail', repodata)
 
       resolveRequest(false, { message: 'Repo not found' })
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
         expect(store.state.error).to.equal('Repo not found')
-        done()
       })
     })
 
-    it('emits error if there is a network error', (done) => {
+    it('emits error if there is a network error', () => {
       const store = createStore({ user: 'testuser' })
-      const request = store.dispatch('detail', 'testuser/repo1')
+      const request = store.dispatch('detail', repodata)
 
       rejectRequest('You are offline :(')
 
-      request.then(() => {
+      return request.then(() => {
         expect(store.state.loading).to.equal(false)
         expect(store.state.error).to.equal('You are offline :(')
-        done()
       })
     })
   })

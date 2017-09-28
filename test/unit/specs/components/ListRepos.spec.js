@@ -59,9 +59,9 @@ describe('ListRepos.vue', () => {
 
     lis[0].trigger('click')
     expect(detailcalls.length).to.equal(1)
-    // repo name should be passed as the 2nd argument
+    // repo object should be passed as the 2nd argument
     // to the detail action
-    expect(detailcalls[0][1]).to.equal('test/repo1')
+    expect(detailcalls[0][1].full_name).to.equal('test/repo1')
   })
 
   it('should trigger "main" when the changeUser method is called', () => {
